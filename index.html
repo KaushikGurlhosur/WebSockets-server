@@ -50,6 +50,26 @@
         const entry = `${new Date().toLocaleTimeString()} ${label} ${message}\n`;
         log.textContent = entry + log.textContent; // Prepend for fast reading
       };
+
+      // 2. Event Listeners (The WebSocket Lifecycle)
+      socket.addEventListener("open", () => {
+        statusEl.textContent = "Connected: ws://localhost:8080";
+        statusEl.className = "status-on";
+        appendLog("[SYSTEM]", "Tunnel Established");
+      });
+
+      socket.addEventListener("message", (event) => {
+        // This is where the broadcast from OTHER clients appears
+        appendLog("[INCOMING]", event.data);
+      });
+
+      socket.addEventListener("close", () => {
+        statusEl.textContent = "Disconnected";
+        statusEl.className = "status-off";
+        appendLog("[SYSTEM]", "Tunnel Closed");
+      });
+
+      // 3. Sending Data
     </script>
   </body>
 </html>
