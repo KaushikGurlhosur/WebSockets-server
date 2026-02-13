@@ -31,7 +31,11 @@
     <p id="status" class="status-off">Connecting...</p>
 
     <form id="message-form">
-      <input type="text" placeholder="Send Message..." required />
+      <input
+        id="message-input"
+        type="text"
+        placeholder="Send Message..."
+        required />
       <button type="submit">Deploy Message</button>
     </form>
 
@@ -70,6 +74,22 @@
       });
 
       // 3. Sending Data
+      document
+        .getElementById("message-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          // SENIOR CHECK: Don't try to send if the socket is dead
+          if (socket.readyState !== WebSocket.OPEN) {
+            appendLog("[Error]", "No active tunnel found.");
+            return;
+          }
+
+          const msg = input.value.trim();
+          socket.send(msg);
+          appendLog("[SENT]", msg);
+          input.value = "";
+        });
     </script>
   </body>
 </html>
